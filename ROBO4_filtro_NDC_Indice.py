@@ -41,6 +41,7 @@ def countNDCad1(jwt):
     value = data2['count']
     #print('Numero NDC con Strategia ad 1 su INDICE: ' + str(value))
     return value
+    
 def countPresenti(jwt,listaXLS):
     url = 'https://digitaladvisory-elk.mps.apps.paas.gmps.global:443/bsrobo4-risp-picking-'+indice+'/_count'
     autorization = 'Bearer'+ jwt
