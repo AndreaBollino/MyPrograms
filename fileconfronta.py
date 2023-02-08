@@ -7,6 +7,8 @@ from filecmp import dircmp
 
 os.getcwd()
 
+
+
 #filecmp.cmpfiles('V:\\batch', 'V:\\batch_gov', regole_switch_OICR.csv, shallow=True)
 #print(filecmp.cmp('V:\\batch\\regole_switch_OICR.csv','V:\\batch_gov\\regole_switch_OICR.csv'), end=' ')
 print(filecmp.cmp('V:\\batch\\regole_switch_OICR.csv',
