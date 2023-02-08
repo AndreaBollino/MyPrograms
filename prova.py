@@ -70,16 +70,16 @@ for item in my_gen():
 #     threads.append(t)
 #     t.start() 
 
-# """ import threading
+import threading
 
-# def worker():
-#     print(threading.get_ident())
+def worker():
+    print(threading.get_ident())
 
-# threads = []
-# for i in range(5):
-#     t = threading.Thread(target=worker)
-#     #threads.append(t)
-#     t.start() """
+threads = []
+for i in range(5):
+    t = threading.Thread(target=worker)
+    #threads.append(t)
+    t.start()
 
 try:
     x = 1 / 0
