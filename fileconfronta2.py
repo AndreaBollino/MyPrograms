@@ -12,6 +12,7 @@ os.getcwd()
 print(filecmp.cmp('V:\\batch\\regole_switch_OICR.csv',
                   'V:\\batch_gov\\regole_switch_OICR.csv',
                   shallow=False))
+                  
 
 #filecmp.cmp('V:\\batch\\regole_switch_OICR.csv','V:\\batch_gov\\regole_switch_OICR.csv')
 dc = filecmp.dircmp('V:\\batch', 'V:\\batch_gov')
