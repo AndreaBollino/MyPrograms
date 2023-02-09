@@ -12,7 +12,7 @@ import numpy as np
 
 
 def login():
-    url = 'https://idpint.sum.gmps.global/sbopenamrest/api/oidcappservice'
+    url = 'https://idpint.coding.sum.testfactory.copergmps/sbopenamrest/api/oidcappservice'
     headers = {'Content-Type': 'application/json'} 
     data = {
         "username":"APPWVELK",
@@ -27,7 +27,7 @@ def login():
     return jwt
 
 def countNDCad1(jwt):
-    url = 'https://digitaladvisory-elk.mps.apps.paas.gmps.global:443/bsrobo4-risp-picking-'+indice+'/_count'
+    url = 'https://digitaladvisory-elk.coding.mps.apps.paas.testfactory.copergmps:443/bsrobo4-risp-picking-'+indice+'/_count'
     autorization = 'Bearer'+ jwt
     autorization = autorization.replace('"', '')
     autorization = autorization.replace('}', '')
@@ -43,7 +43,7 @@ def countNDCad1(jwt):
     return value
     
 def countPresenti(jwt,listaXLS):
-    url = 'https://digitaladvisory-elk.mps.apps.paas.gmps.global:443/bsrobo4-risp-picking-'+indice+'/_count'
+    url = 'https://digitaladvisory-elk.coding.mps.apps.paas.testfactory.copergmps:443/bsrobo4-risp-picking-'+indice+'/_count'
     autorization = 'Bearer'+ jwt
     autorization = autorization.replace('"', '')
     autorization = autorization.replace('}', '')
