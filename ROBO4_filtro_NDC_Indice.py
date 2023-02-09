@@ -104,7 +104,8 @@ countNDCad1SuIndice = countNDCad1(jwt)
 filexls = input("Immetti nome folgio xls filtro : ")  
 
 #leggiamo il foglio excel e salviamo i dati in una variabile
-data = pd.read_excel('CA Fondi Finestra_bsrobo4-risp-picking-1669 - esclusioni.xlsx') 
+#data = pd.read_excel('CA Fondi Finestra_bsrobo4-risp-picking-1669 - esclusioni.xlsx') 
+data = pd.read_excel(filexls) 
 #data = pd.read_excel(filexls) 
 #salviamo la prima colonna del foglio in una lista 
 lista = data.iloc[:,0].tolist() 
