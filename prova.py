@@ -70,18 +70,26 @@ for item in my_gen():
 #     threads.append(t)
 #     t.start() 
 
-import threading
+# import threading
 
-def worker():
-    print(threading.get_ident())
+# def worker():
+#     print(threading.get_ident())
 
-threads = []
-for i in range(5):
-    t = threading.Thread(target=worker)
-    #threads.append(t)
-    t.start()
+# threads = []
+# for i in range(5):
+#     t = threading.Thread(target=worker)
+#     #threads.append(t)
+#     t.start()
 
-try:
-    x = 1 / 0
-except ZeroDivisionError as e:
-    print("Error Code:", e)
+# try:
+#     x = 1 / 0
+# except ZeroDivisionError as e:
+#     print("Error Code:", e)
+
+#scrivi uno shell script che prende qualsiasi carattere prima di .zip usando (.*?)
+import re 
+
+string = "dash-lx103000600333.testfactory.copergmps.2023-02-08.zip" 
+match = re.search("(.*?)\.zip", string) 
+if match: 
+    print (match.group(1))
