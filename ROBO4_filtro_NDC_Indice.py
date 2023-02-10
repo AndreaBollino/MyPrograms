@@ -93,7 +93,7 @@ def updateNDCstrategiaNULL():
     #print('INDICE: ' + response.text)
     #data2 = response.json() 
     #value = data2['count']
-    print('Cancellati: ' + str(response))
+    print('NDC da lista xls messi Strategia a null: ' + str(response))
     return response
 
 indice=input("Immetti numero indice : ")   
