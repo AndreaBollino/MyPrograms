@@ -15,12 +15,13 @@ def login():
     url = 'https://idpint.coding.sum.testfactory.copergmps/sbopenamrest/api/oidcappservice'
     headers = {'Content-Type': 'application/json'} 
     data = {
-        "username":"APPWVELK",
-        "password":"1_h849fnZuiNKocUhXDu5J9w==",
-        "clientid":"digitaladv",
-        "clientsecret":"1_wItFnJhk211TKX/WalIQ9A==",
-        "fgPswEncrypted":"true"
-}
+        "username":"APTWVELK",
+    "password":"1_EL9CP22JG09GLPAccSzJpA==",
+    "clientid":"digitaladv",
+    "clientsecret":"1_wItFnJhk211TKX/WalIQ9A==",
+    "fgPswEncrypted":"true",
+    "scope":"roles"
+    }
     response = requests.post(url, headers=headers, data=json.dumps(data), verify=False)
     jwt=response.text.split(':')[1]
     print('JWT:' + jwt)
