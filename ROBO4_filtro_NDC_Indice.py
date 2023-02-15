@@ -9,6 +9,7 @@ import pandas as pd
 import requests
 import json
 import numpy as np
+import time
 
 def login():
     url = 'https://idpint.coding.sum.testfactory.copergmps/sbopenamrest/api/oidcappservice'
@@ -89,7 +90,7 @@ def updateNDCstrategiaNULL(listaxls):
     #data2 = response.json() 
     #value = data2['count']
     print('NDC da lista xls messi Strategia a null: ' + str(response))
-    return response
+    return response.status_code
 
 indice=input("Immetti numero indice : ")   
 indice = str(indice)       
@@ -127,9 +128,17 @@ print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(countNDCxl
 print('NDC rimanenti dopo aver Filtrato= ' + str(countNDCxlsStr1-len(outputOrig)))
 pippo=input('Dai ok per update')
 risposta = updateNDCstrategiaNULL(outputOrig)
-print('UPDATE eseguito messa strategia a null su NDC dell Indice presenti in foglio xls')
-print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(countPresenti(jwt,outputOrig)))
-print('Presenza NDC su INDICE e strategia ad 1: ' + str(countNDCad1(jwt)))
+if (risposta == 200):
+    print('UPDATE eseguito messa strategia a null su NDC dell Indice presenti in foglio xls')
+    print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(countPresenti(jwt,outputOrig)))
+    print('Presenza NDC su INDICE e strategia ad 1: ' + str(countNDCad1(jwt)))
+else:
+    ndcAD1 = countPresenti(jwt,outputOrig)
+    while ndcAD1 != 0: 
+            print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(ndcAD1))
+            time.sleep(10)
+            ndcAD1 = countPresenti(jwt,outputOrig)
+    print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(countPresenti(jwt,outputOrig)))
 
 esci=input()
 
