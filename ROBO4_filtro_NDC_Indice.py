@@ -10,7 +10,6 @@ import requests
 import json
 import numpy as np
 
-
 def login():
     url = 'https://idpint.coding.sum.testfactory.copergmps/sbopenamrest/api/oidcappservice'
     headers = {'Content-Type': 'application/json'} 
