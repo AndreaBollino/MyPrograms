@@ -85,7 +85,10 @@ def updateNDCstrategiaNULL(listaxls):
         "terms": {"ndg": listaxls}
      }
     }
+    #try: 
     response = requests.post(url, headers=headers, data=json.dumps(data), verify=False)
+    #except requests.exceptions.RequestException as e: 
+    #    print('An exception has occurred: %s' % e)
     #print('INDICE: ' + response.text)
     #data2 = response.json() 
     #value = data2['count']
@@ -127,7 +130,13 @@ print('NDC da elliminare: ' + str(len(outputOrig)))
 print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(countNDCxlsStr1))
 print('NDC rimanenti dopo aver Filtrato= ' + str(countNDCxlsStr1-len(outputOrig)))
 pippo=input('Dai ok per update')
-risposta = updateNDCstrategiaNULL(outputOrig)
+try:
+    risposta = updateNDCstrategiaNULL(outputOrig)
+except requests.exceptions.RequestException as e: 
+    print('An exception has occurred: %s' % e)
+    print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(countPresenti(jwt,outputOrig)))
+    print('Presenza NDC su INDICE e strategia ad 1: ' + str(countNDCad1(jwt)))
+    exit()
 if (risposta == 200):
     print('UPDATE eseguito messa strategia a null su NDC dell Indice presenti in foglio xls')
     print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(countPresenti(jwt,outputOrig)))
