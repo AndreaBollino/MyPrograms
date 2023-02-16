@@ -136,6 +136,7 @@ except requests.exceptions.RequestException as e:
     print('An exception has occurred: %s' % e)
     print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(countPresenti(jwt,outputOrig)))
     print('Presenza NDC su INDICE e strategia ad 1: ' + str(countNDCad1(jwt)))
+    esci=input()
     exit()
 if (risposta == 200):
     print('UPDATE eseguito messa strategia a null su NDC dell Indice presenti in foglio xls')
