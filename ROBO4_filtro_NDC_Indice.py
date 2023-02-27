@@ -100,7 +100,7 @@ indice=input("Immetti numero indice : ")
 indice = str(indice)       
 jwt = login()
 countNDCad1SuIndice = countNDCad1(jwt)
-print (countNDCad1SuIndice)
+print ('Presenza NDC su INDICE e strategia ad 1: ' + countNDCad1SuIndice)
 #updateNDCstrategiaNULL()
 filexls = input("Immetti nome folgio xls filtro : ")  
 
