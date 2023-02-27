@@ -69,7 +69,8 @@ def countPresenti(jwt,listaXLS):
     #print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(value))
     return value
 def updateNDCstrategiaNULL(listaxls):
-    url = 'https://digitaladvisory-elk.coding.mps.apps.paas.testfactory.copergmps:443/bsrobo4-risp-picking-'+indice+'/_update_by_query'
+    #url = 'https://digitaladvisory-elk.coding.mps.apps.paas.testfactory.copergmps:443/bsrobo4-risp-picking-'+indice+'/_update_by_query'
+    url = 'https://digitaladvisory-elk.mps.apps.paas.gmps.global:443/bsrobo4-risp-picking-'+indice+'/_update_by_query'
     autorization = 'Bearer'+ jwt
     autorization = autorization.replace('"', '')
     autorization = autorization.replace('}', '')
@@ -99,7 +100,7 @@ indice=input("Immetti numero indice : ")
 indice = str(indice)       
 jwt = login()
 countNDCad1SuIndice = countNDCad1(jwt)
-#print (count)
+print (countNDCad1SuIndice)
 #updateNDCstrategiaNULL()
 filexls = input("Immetti nome folgio xls filtro : ")  
 
@@ -114,7 +115,7 @@ risposta= input('vuoi preparare file txt con NDC pronti per Postman? s/n ')
 if (risposta=='s'):
     with open('modificato.txt', 'w') as outfile:
         for i in range(len(output)-1):  #scorriamo tutti gli elementi della lista  
-            output[i] = '"' + output[i] + '"' + ';' #sostituisci l'elemento con se stesso concatenato con +  
+            output[i] = '"' + output[i] + '"' + ',' #sostituisci l'elemento con se stesso concatenato con +  
             print(output[i])
             outfile.write(output[i]+"\n")
 
@@ -148,6 +149,9 @@ else:
             print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(ndcAD1))
             time.sleep(10)
             ndcAD1 = countPresenti(jwt,outputOrig)
-    print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(countPresenti(jwt,outputOrig)))
+
+print('UPDATE eseguito messa strategia a null su NDC dell Indice presenti in foglio xls')
+print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(countPresenti(jwt,outputOrig)))
+print('Presenza NDC su INDICE e strategia ad 1: ' + str(countNDCad1(jwt)))
 
 esci=input()
