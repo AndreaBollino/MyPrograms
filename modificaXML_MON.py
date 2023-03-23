@@ -33,6 +33,6 @@ for file in files:
                 lines = file.readlines()
 
             lines[0] = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
-
             with open(ciccio, "w") as file:
                 file.writelines(lines)
+            
