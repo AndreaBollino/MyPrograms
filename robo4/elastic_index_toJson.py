@@ -3,7 +3,7 @@ import json
 import time
 from elasticsearch import Elasticsearch
 
-target_id = '2422'
+#target_id = '2422'
 file_prefix = 'bsrobo4-risp-picking-'
 input_path = 'C:/Users/S511480/Desktop/Python_MieProgrammi/MyPrograms/robo4/input/'
 ouput_path = 'C:/Users/S511480/Desktop/Python_MieProgrammi/MyPrograms/robo4/output/'
@@ -43,6 +43,7 @@ headers = {
 }
 
 indice = input("Inserisci indice: ") 
+target_id=indice
 indice = "bsrobo4-risp-picking-"+ indice
 
 es=Elasticsearch("https://digitaladvisory-elk-wvk8snpwaelasticsearch-sysprod.apps.fi1.paas.gmps.global",headers=headers,verify_certs=False)
