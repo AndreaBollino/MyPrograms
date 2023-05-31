@@ -100,7 +100,7 @@ indice=input("Immetti numero indice : ")
 indice = str(indice)       
 jwt = login()
 countNDCad1SuIndice = countNDCad1(jwt)
-print ('Presenza NDC su INDICE e strategia ad 1: ' + countNDCad1SuIndice)
+print ('Presenza NDC su INDICE e strategia ad 1: ' + str(countNDCad1SuIndice))
 #updateNDCstrategiaNULL()
 filexls = input("Immetti nome folgio xls filtro : ")  
 
@@ -127,10 +127,14 @@ if (risposta=='s'):
 ciccio= input('vai avanti')
 countNDCxlsStr1 = countPresenti(jwt,outputOrig)
 print('Presenza NDC su INDICE e strategia ad 1: ' + str(countNDCad1SuIndice))
-print('NDC da elliminare: ' + str(len(outputOrig)))
+print('NDC da eliminare: ' + str(len(outputOrig)))
 print('Presenza NDC da foglio xls su INDICE e strategia ad 1: ' + str(countNDCxlsStr1))
-print('NDC rimanenti dopo aver Filtrato= ' + str(countNDCxlsStr1-len(outputOrig)))
-pippo=input('Dai ok per update')
+if countNDCxlsStr1 == 0:
+    print('NDC rimanenti dopo aver Filtrato= ' + str(countNDCad1SuIndice))
+    print('Puoi uscire dal programma CTRL-C')
+else:
+    print('NDC rimanenti dopo aver Filtrato= ' + str(countNDCad1SuIndice-len(outputOrig)))
+    pippo=input('Dai ok per update')
 try:
     risposta = updateNDCstrategiaNULL(outputOrig)
 except requests.exceptions.RequestException as e: 
