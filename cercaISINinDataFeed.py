@@ -25,4 +25,5 @@ for filename in os.listdir():
                 if string in line:
                 #if "IT0005537094" in line: 
                     print("La stringa è stata trovata nel file {}".format(filename))
+finito = input()
                     #print("Found string '{}' in file '{}' with comment: {}".format(string, filename, line))

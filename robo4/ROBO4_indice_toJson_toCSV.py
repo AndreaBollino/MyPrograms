@@ -1,20 +1,13 @@
 #pyinstaller --onefile prova.py  //per generare .exe
-
+#query associazione nome strategia indice ROBO in fondo al codice
 import requests
 import json
-import time
 from elasticsearch import Elasticsearch
-
 import pandas as pd
-import dask.dataframe as dd
 import numpy as np
-import zipfile
 import glob
-import numba
 import elementpath
 import os
-
-
 
 from xml.etree import ElementTree
 import numpy as np
@@ -56,8 +49,11 @@ headers = {
 }
 
 indice = input("Inserisci indice: ")
-input_path = os.path.dirname(os.path.abspath(__file__))+'\\input'
-ouput_path = os.path.dirname(os.path.abspath(__file__))+'\\output'
+robo_path = input("Inserisci path nel formato es C:\\Users\\S511480\\Desktop\\robo4 : ")
+input_path = robo_path+'\\input'
+ouput_path = robo_path+'\\output'
+#input_path = os.path.dirname(os.path.abspath(__file__))+'\\input'
+#ouput_path = os.path.dirname(os.path.abspath(__file__))+'\\output'
 
 if not os.path.exists(input_path+"\\bsrobo4-risp-picking-"+ indice):
         os.makedirs(input_path+"\\bsrobo4-risp-picking-"+ indice)
@@ -71,7 +67,7 @@ target_id=indice
 target_id2=indice
 indice = "bsrobo4-risp-picking-"+ indice
 
-es=Elasticsearch("https://digitaladvisory-elk-wvk8snpwaelasticsearch-sysprod.apps.fi1.paas.gmps.global",headers=headers,verify_certs=False)
+es=Elasticsearch("https://digitaladvisory-elk-wvk8snpwaelasticsearch-sysprod.apps.fi1.paas.gmps.global",headers=headers,verify_certs=False,timeout=30)
 #es=Elasticsearch("https://digitaladvisory-elk.mps.apps.paas.gmps.global",headers=headers,verify_certs=False)
 #es.info()
 body = {
@@ -137,7 +133,7 @@ body = {
     ]
 }
 
-response_search = es.search(body)
+response_search = es.search(body,request_timeout=30)
 hits = response_search['hits']['hits']
 sort=hits[-1]['sort']
 sort0=sort[0]
@@ -213,9 +209,9 @@ while counter < (totalIterations+2):
             file.write("\n")
    counter += 1
 print("Finita parte creazione Json")
-print("Si può scegliere creazione unico csv dando invio")
-print("oppure inserire indice con ""-numero"" in base alla creazioe dei json")
-target_id = input() 
+#print("Si può scegliere creazione unico csv dando invio")
+#print("Inserire indice intero oppure con ""-numero"" in base alla creazioe dei json")
+target_id = input("Inserire indice intero oppure con ""-numero"" in base alla creazioe dei json: ") 
 if len(target_id) == 0:
      target_id=target_id2
 
@@ -358,3 +354,36 @@ output['ctv_old'].describe()
 output['ctv_new'].describe()
 
 print("finito csv nella cartella output ")
+
+""" select 
+r4s.DESCRIPTION as R4_SESSION_DESCRIPTION,
+s.INDICE_OUTPUT as BS_SESSION_SCHED_INDICE_OUTPUT,
+r4t.id as R4_TARGET_ID,
+s.id as BS_SESSION_SCHED_ID,
+s.CODICE_SESSIONE as BS_SESSION_SCHED_CODICE_SESSIONE,
+s.STATO as BS_SESSION_SCHED_STATO,
+p.id as Bs_Session_Progress_ID,
+P.ID_SESSION_SCHED as Bs_Session_Progress_ID_SESSION_SCHED,
+
+r4t.SESSION_ID as R4_TARGET_SESSION_ID,
+r4s.ID as R4_SESSION_ID,
+r4s.PHASE as R4_SESSION_PHASE,
+r4s.STATUS as R4_SESSION_STATUS,
+'BS_SESSION_WORKER_PROGRESS --->',
+bsw.*
+
+FROM NPWACDR4.BS_SESSION_SCHED s
+INNER JOIN Npwacdr4.Bs_Session_Progress P
+ON P.Id_Session_Sched = S.Id
+LEFT JOIN NPWACDR4.R4_TARGET r4t
+ON r4t.id = s.CODICE_SESSIONE
+LEFT JOIN NPWACDR4.R4_SESSION r4s
+ON r4s.id = r4t.SESSION_ID
+join NPWACDR4.BS_SESSION_WORKER_PROGRESS bsw
+on p.id = bsw.ID_SESSION_PROGRESS
+WHERE 1=1
+and r4s.DESCRIPTION is not null
+--and R4s.Description like 'CA Personal Style Mag 23'
+order by r4t.id desc-- as R4_TARGET_ID
+--order by bsw.START_DATE desc """
+
