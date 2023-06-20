@@ -8,6 +8,7 @@ import numpy as np
 import glob
 import elementpath
 import os
+import getpass
 
 from xml.etree import ElementTree
 import numpy as np
@@ -17,15 +18,30 @@ file_prefix = 'bsrobo4-risp-picking-'
 #input_path = 'C:/Users/S511480/Desktop/Python_MieProgrammi/MyPrograms/robo4/input/'
 #ouput_path = 'C:/Users/S511480/Desktop/Python_MieProgrammi/MyPrograms/robo4/output/'
 
+#env_var = os.environ 
+# Print the list of user's
+# environment variables
+#print("User's Environment variable:")
+#print(dict(env_var))
+
+
+user = input("Inserire utente (SXXXXXX): ")
+passwd = getpass.getpass("Inserisci la tua password: ")
+#print("La password inserita è:", pw)
+
 def login():
     url = 'https://idpint.sum.gmps.global/sbopenamrest/api/oidcappservice'
     headers = {'Content-Type': 'application/json'} 
     data = {
-        "username":"APPWVELK",
-        "password":"1_h849fnZuiNKocUhXDu5J9w==",
+        #"username":"APPWVELK",
+        "username":user,
+        #"password":"1_h849fnZuiNKocUhXDu5J9w==",
+        "password":passwd,
         "clientid":"digitaladv",
         "clientsecret":"1_wItFnJhk211TKX/WalIQ9A==",
-        "fgPswEncrypted":"true"
+        #"fgPswEncrypted":"true"
+        "fgPswEncrypted":"false",
+        "scope":"roles"
 }
     response = requests.post(url, headers=headers, data=json.dumps(data), verify=False)
     jwt=response.text.split(':')[1]
