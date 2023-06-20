@@ -31,7 +31,6 @@ with open(output_file, "w", newline="") as csvfile:
     # Scrittura dei nomi delle colonne come prima riga
     writer.writerow(column_names)
 
-
     # Scrittura dei dati
     for row in results:
         writer.writerow(row)
