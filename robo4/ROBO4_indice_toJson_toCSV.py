@@ -12,6 +12,8 @@ import getpass
 
 from xml.etree import ElementTree
 import numpy as np
+import cx_Oracle
+
 pd.options.display.max_columns = 999
 
 file_prefix = 'bsrobo4-risp-picking-'
@@ -25,9 +27,68 @@ file_prefix = 'bsrobo4-risp-picking-'
 #print(dict(env_var))
 
 
-user = input("Inserire utente (SXXXXXX): ")
+#user = input("Inserire utente (SXXXXXX): ")
+user = os.environ.get("USERNAME")
+print ("Utente: "+user)
 passwd = getpass.getpass("Inserisci la tua password: ")
 #print("La password inserita è:", pw)
+
+cx_Oracle.init_oracle_client(config_dir="C:\\oracle\\ora12R2CL_32\\network\\admin")
+connection = cx_Oracle.connect(dsn="OraWV_NPWAADVISORYAPP_PROD.world", encoding="UTF-8")
+sessione = input("Inserisci descrizione sessione: ")
+sessione = "%"+sessione+"%"
+cursor = connection.cursor()
+query = """
+WITH totale AS
+  (SELECT r4s.DESCRIPTION AS R4_SESSION_DESCRIPTION,
+    s.INDICE_OUTPUT       AS BS_SESSION_SCHED_INDICE_OUTPUT,
+    r4t.id                AS R4_TARGET_ID,
+    bsw.START_DATE        AS data_partenza
+  FROM NPWACDR4.BS_SESSION_SCHED s
+  INNER JOIN Npwacdr4.Bs_Session_Progress P
+  ON P.Id_Session_Sched = S.Id
+  LEFT JOIN NPWACDR4.R4_TARGET r4t
+  ON r4t.id = s.CODICE_SESSIONE
+  LEFT JOIN NPWACDR4.R4_SESSION r4s
+  ON r4s.id = r4t.SESSION_ID
+  JOIN NPWACDR4.BS_SESSION_WORKER_PROGRESS bsw
+  ON p.id              = bsw.ID_SESSION_PROGRESS
+  WHERE 1              =1
+  AND r4s.DESCRIPTION IS NOT NULL
+  --AND R4s.Description LIKE 'CA Top di Gamma Aderenza < 7 LUG-AGO 23'
+  AND R4s.Description LIKE :description
+    --and s.INDICE_OUTPUT  in ('bsrobo4-risp-picking-2507','bsrobo4-risp-picking-2506')
+    --order by r4t.id desc-- as R4_TARGET_ID
+  ORDER BY bsw.START_DATE DESC
+  )
+SELECT R4_SESSION_DESCRIPTION,
+  BS_SESSION_SCHED_INDICE_OUTPUT,
+  R4_TARGET_ID
+FROM totale
+GROUP BY R4_SESSION_DESCRIPTION,
+  BS_SESSION_SCHED_INDICE_OUTPUT,
+  R4_TARGET_ID
+"""
+cursor.execute(query, description=sessione)
+#cursor.execute(query)
+
+# Recupero dei risultati
+#results = cursor.fetchall()
+# Ottenimento dei risultati univoci
+distinct_results = set()
+for row in cursor:
+    distinct_results.add(row)
+
+indice = None
+if distinct_results:
+    indice = list(distinct_results)[-1][-1]
+
+# Stampa del risultato
+print("Valore dell'ultima colonna (indice):", indice)
+indice = str(indice)
+# Chiusura della connessione
+cursor.close()
+connection.close()
 
 def login():
     url = 'https://idpint.sum.gmps.global/sbopenamrest/api/oidcappservice'
@@ -64,7 +125,7 @@ headers = {
     'Authorization': authorization
 }
 
-indice = input("Inserisci indice: ")
+#indice = input("Inserisci indice: ")
 robo_path = input("Inserisci path nel formato es C:\\Users\\S511480\\Desktop\\robo4 : ")
 input_path = robo_path+'\\input'
 ouput_path = robo_path+'\\output'
@@ -227,9 +288,10 @@ while counter < (totalIterations+2):
 print("Finita parte creazione Json")
 #print("Si può scegliere creazione unico csv dando invio")
 #print("Inserire indice intero oppure con ""-numero"" in base alla creazioe dei json")
-target_id = input("Inserire indice intero oppure con ""-numero"" in base alla creazioe dei json: ") 
-if len(target_id) == 0:
-     target_id=target_id2
+
+#target_id = input("Inserire indice intero oppure con ""-numero"" in base alla creazioe dei json: ") 
+#if len(target_id) == 0:
+target_id=target_id2
 
 listFile = glob.glob(f'{input_path}{file_prefix}{target_id}*')
 print(listFile)
