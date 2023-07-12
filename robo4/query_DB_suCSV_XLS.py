@@ -26,20 +26,28 @@ WITH totale AS
   ON p.id              = bsw.ID_SESSION_PROGRESS
   WHERE 1              =1
   AND r4s.DESCRIPTION IS NOT NULL
-  AND (R4s.Description in 'CA Sottopeso GOVB/CORB Giu 23 - Personas BOND' or
-       R4s.Description in 'CA Sottopeso GOVB/CORB Giu 23 - Personas BOND' )
+  AND  (LOWER (R4s.Description) = LOWER ('CA Sottopeso Obbligazionario lug-ago 2023') or
+        LOWER (R4s.Description) = LOWER ('CA Ottimizzazione % Equity lug-ago 2023') or
+        LOWER (R4s.Description) = LOWER ('CB Fondi ESG per PTF sostenibili lug-ago 23') or
+        LOWER (R4s.Description) = LOWER ('CA OICR LUG-AGO 23 - Personas LIQ') or
+        LOWER (R4s.Description) = LOWER ('CA OICR LUG-AGO 2023 - Personas BOND') or
+        LOWER (R4s.Description) = LOWER ('CA OICR LUG-AGO 2023 - Personas DYNA') or
+        LOWER (R4s.Description) = LOWER ('CA Fondi a Finestra LUG-AGO 2023 - Personas LIQ') or
+        LOWER (R4s.Description) = LOWER ('CA Fondi a Finestra LUG-AGO 2023 - Personas BOND') or
+        LOWER (R4s.Description) = LOWER ('CA Fondi a Finestra LUG-AGO 2023 - Personas DINAMICO')
+)
   --LIKE 'CA Top di Gamma Aderenza < 7 LUG-AGO 23'
   --AND R4s.Description LIKE :description
     --and s.INDICE_OUTPUT  in ('bsrobo4-risp-picking-2507','bsrobo4-risp-picking-2506')
     --order by r4t.id desc-- as R4_TARGET_ID
   ORDER BY bsw.START_DATE DESC
   )
-SELECT R4_SESSION_DESCRIPTION,
-  BS_SESSION_SCHED_INDICE_OUTPUT,
-  R4_TARGET_ID
+SELECT R4_SESSION_DESCRIPTION AS DESCRIZIONE,
+  --BS_SESSION_SCHED_INDICE_OUTPUT,
+  R4_TARGET_ID AS INDICE
 FROM totale
 GROUP BY R4_SESSION_DESCRIPTION,
-  BS_SESSION_SCHED_INDICE_OUTPUT,
+ -- BS_SESSION_SCHED_INDICE_OUTPUT,
   R4_TARGET_ID
 """
 cursor.execute(query)
@@ -54,7 +62,7 @@ column_names = [col[0] for col in cursor.description]
 for row in results:
     print(row)
 
-output_file = "query.csv"
+output_file = "indice.csv"
 
 # Scrittura dei risultati su un file CSV
 with open(output_file, "w", newline="") as csvfile:
@@ -83,7 +91,7 @@ for row in results:
     row_idx += 1
 
 # Salvataggio del foglio di lavoro
-workbook.save('query2.xlsx')
+workbook.save('Indice.xlsx')
 
 # Chiusura della connessione
 cursor.close()
