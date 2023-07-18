@@ -84,159 +84,46 @@ if not os.path.exists(ouput_path+"\\bsrobo4-risp-picking-"+ indice):
         os.makedirs(ouput_path+"\\bsrobo4-risp-picking-"+ indice)
 
 input_path = input_path+"\\bsrobo4-risp-picking-"+ indice+"\\"
-ouput_path = ouput_path+"\\bsrobo4-risp-picking-"+ indice+"\\"
+ouput_path = ouput_path+"\\"
 
 target_id=indice
 target_id2=indice
 indice = "bsrobo4-risp-picking-"+ indice
 
 es=Elasticsearch("https://digitaladvisory-elk-wvk8snpwaelasticsearch-sysprod.apps.fi1.paas.gmps.global",headers=headers,verify_certs=False,timeout=30)
-#es=Elasticsearch("https://digitaladvisory-elk.mps.apps.paas.gmps.global",headers=headers,verify_certs=False)
-#es.info()
-body = {
-    "query": {
-        "term": {
-            "strategiaAssegnata": {
-                "value": "1"
-            }
-        }
-    }
-}
-
-# Esegui la ricerca
-response_count = es.count(index=indice, body=body)
-# Ottieni il numero di risultati
-count = response_count['count']
-print("Numero di risultati: ", count)
-
-pagination_size = int(input("Inserisci numero documenti per pagina (file json): "))
-
-#response = es.pit(params={"keep_alive": "1m"})
-response_pit = es.open_point_in_time(index=indice,keep_alive="10m")
-print(response_pit['id'])
-
 
 body = {
+    "size": 10000,
     "query": {
-        "term": {
-            "strategiaAssegnata": {
-                "value": "1"
-            }
+        "bool": {
+            "must": [
+                {
+                    "exists": {
+                        "field": "outcome"
+                    }
+                }
+            ]
         }
     },
-    "_source": False,
-    "fields": [
-        "ndg",
-        "modelloServizio",
-        "mercato",
-        "filialeGui",
-        "codiceGestoreGui",
-        "valoreAderenzaSimulato",
-        "deltaAderenza",
+    "_source": [
         "codiceCliente",
-        "ctvAllocatoSimulato",
-        "ctvTot",
-        "familyStrategyCode",
-        "familyStrategyScope",
-        "richiesta51316ResponseXML"
-    ],
-    "size": pagination_size,
-    "pit": {
-        "id": response_pit['id']   
-        },
-    "sort": [
-        {
-            "_id": {
-                "order": "asc"
-            }
-        },
-        {
-            "_shard_doc": "desc"
-        }
+        "codiceGestore",
+        "filiale",
+        "outcome"
     ]
 }
 
-response_search = es.search(body,request_timeout=30)
-hits = response_search['hits']['hits']
-sort=hits[-1]['sort']
-sort0=sort[0]
-sort1=sort[1]
+response_search = es.search(index=indice,body=body,request_timeout=30)
+#hits = response_search['hits']['hits']
+#sort=hits[-1]['sort']
+#sort0=sort[0]
+#sort1=sort[1]
 
-with open(f'{input_path}{file_prefix}{target_id}'+'-1.json', "w") as file:
+with open(f'{input_path}{file_prefix}{target_id}'+'.json', "w") as file:
         json.dump(response_search, file)
         file.write("\n")
 
-#IMPOSTARE CICLO  da JMeter
-# int totalIterations=${count}/${pagination-size};
-# int totalpages=totalIterations+2;
-# vars.put("start",""+2);
-# vars.put("total-pages",""+totalpages);
-# vars.put("total-iterations",""+totalIterations)
-totalIterations = count//pagination_size
 
-counter = 2
-while counter < (totalIterations+2):
-   print(counter)
-   body = {
-        "query": {
-            "term": {
-                "strategiaAssegnata": {
-                    "value": "1"
-                }
-            }
-        },
-        "_source": False,
-        "fields": [
-        "ndg",
-            "modelloServizio",
-            "mercato",
-            "filialeGui",
-            "codiceGestoreGui",
-            "valoreAderenzaSimulato",
-            "deltaAderenza",
-            "codiceCliente",
-            "ctvAllocatoSimulato",
-            "ctvTot",
-            "familyStrategyCode",
-            "familyStrategyScope",
-            "richiesta51316ResponseXML"
-        ],
-        "size": pagination_size,
-        "pit": {
-            "id": response_pit['id']
-            },
-        "sort": [
-            {
-                "_id": {
-                    "order": "asc"
-                }
-            },
-            {
-                "_shard_doc": "desc"
-            }
-        ],
-        "search_after": [
-            sort0,
-            sort1
-        ]
-    }
-
-   response_search = es.search(body)
-   hits = response_search['hits']['hits']
-   sort=hits[-1]['sort']
-   sort0=sort[0]
-   sort1=sort[1]
-
-   with open(f'{input_path}{file_prefix}{target_id}'+'-'+str(counter)+'.json', "w") as file:
-            json.dump(response_search, file)
-            file.write("\n")
-   counter += 1
-print("Finita parte creazione Json")
-#print("Si può scegliere creazione unico csv dando invio")
-#print("Inserire indice intero oppure con ""-numero"" in base alla creazioe dei json")
-
-#target_id = input("Inserire indice intero oppure con ""-numero"" in base alla creazioe dei json: ") 
-#if len(target_id) == 0:
 target_id=target_id2
 
 listFile = glob.glob(f'{input_path}{file_prefix}{target_id}*')
