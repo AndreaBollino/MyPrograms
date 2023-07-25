@@ -133,7 +133,7 @@ for indiceM in lista_numeri:
      response_search = es.search(index=indice,body=body,request_timeout=30)
     except elasticsearch.exceptions.NotFoundError as e: 
         print('Indice non trovato: ' + str(indice))
-        input("dai invio")
+        esci = input("dai invio")
         continue    
         #exit()
 #hits = response_search['hits']['hits']
@@ -194,8 +194,8 @@ for indiceM in lista_numeri:
     print("finito csv nella cartella output ")
 
 print("finito csv nella cartella output ")
-input("dai invio")
-exit()
+esci = input("dai invio")
+#exit()
 """ select 
 r4s.DESCRIPTION as R4_SESSION_DESCRIPTION,
 s.INDICE_OUTPUT as BS_SESSION_SCHED_INDICE_OUTPUT,
