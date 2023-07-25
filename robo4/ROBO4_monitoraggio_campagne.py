@@ -3,16 +3,17 @@
 import requests
 import json
 from elasticsearch import Elasticsearch
+import elasticsearch
 import pandas as pd
-import numpy as np
+#import numpy as np
 import glob
-import elementpath
+#import elementpath
 import os
 import getpass
 
-from xml.etree import ElementTree
-import numpy as np
-import cx_Oracle
+#from xml.etree import ElementTree
+#import numpy as np
+#import cx_Oracle
 
 pd.options.display.max_columns = 999
 
@@ -33,8 +34,8 @@ print ("Utente: "+user)
 passwd = getpass.getpass("Inserisci la tua password: ")
 #print("La password inserita è:", pw)
 indice = None
-indice = input("Inserisci Indice: ")
-indice = str(indice)
+#indice = input("Inserisci Indice: ")
+#indice = str(indice)
 
 def login():
     url = 'https://idpint.sum.gmps.global/sbopenamrest/api/oidcappservice'
@@ -52,7 +53,7 @@ def login():
 }
     response = requests.post(url, headers=headers, data=json.dumps(data), verify=False)
     jwt=response.text.split(':')[1]
-    print('JWT:' + jwt)
+    #print('JWT:' + jwt)
     return jwt
 
 
@@ -78,21 +79,35 @@ ouput_path = robo_path+'\\output'
 #input_path = os.path.dirname(os.path.abspath(__file__))+'\\input'
 #ouput_path = os.path.dirname(os.path.abspath(__file__))+'\\output'
 
-if not os.path.exists(input_path+"\\bsrobo4-risp-picking-"+ indice):
-        os.makedirs(input_path+"\\bsrobo4-risp-picking-"+ indice)
-if not os.path.exists(ouput_path+"\\bsrobo4-risp-picking-"+ indice):
-        os.makedirs(ouput_path+"\\bsrobo4-risp-picking-"+ indice)
+nome_file = input("Inserisci il nome del file da leggere: ")
+nome_file = robo_path+'\\'+nome_file
+lista_numeri = []
+with open(nome_file, 'r') as file:
+            for linea in file:
+                numero = linea.strip()  # Converte il testo della linea in un numero
+                numero = str(numero)
+                lista_numeri.append(numero)
+print(lista_numeri)
 
-input_path = input_path+"\\bsrobo4-risp-picking-"+ indice+"\\"
-ouput_path = ouput_path+"\\"
+for indiceM in lista_numeri:
+    print(indiceM)
 
-target_id=indice
-target_id2=indice
-indice = "bsrobo4-risp-picking-"+ indice
+    if not os.path.exists(input_path): #+"\\bsrobo4-risp-picking-"+ indice):
+            os.makedirs(input_path) # +"\\bsrobo4-risp-picking-"+ indice)
+    if not os.path.exists(ouput_path): #+"\\bsrobo4-risp-picking-"+ indice):
+           os.makedirs(ouput_path) #+"\\bsrobo4-risp-picking-"+ indice)
+    # input_path = input_path+"\\bsrobo4-risp-picking-"+ indice+"\\"
 
-es=Elasticsearch("https://digitaladvisory-elk-wvk8snpwaelasticsearch-sysprod.apps.fi1.paas.gmps.global",headers=headers,verify_certs=False,timeout=30)
+    input_path = input_path+"\\"
+    ouput_path = ouput_path+"\\"
 
-body = {
+    target_id=indiceM
+    target_id2=indiceM
+    indice = "bsrobo4-risp-picking-"+ indiceM
+
+    es=Elasticsearch("https://digitaladvisory-elk-wvk8snpwaelasticsearch-sysprod.apps.fi1.paas.gmps.global",headers=headers,verify_certs=False,timeout=30)
+
+    body = {
     "size": 10000,
     "query": {
         "bool": {
@@ -111,66 +126,76 @@ body = {
         "filiale",
         "outcome"
     ]
-}
+    }
 
-response_search = es.search(index=indice,body=body,request_timeout=30)
+    #response_search = es.search(index=indice,body=body,request_timeout=30)
+    try:
+     response_search = es.search(index=indice,body=body,request_timeout=30)
+    except elasticsearch.exceptions.NotFoundError as e: 
+        print('Indice non trovato: ' + str(indice))
+        input("dai invio")
+        continue    
+        #exit()
 #hits = response_search['hits']['hits']
 #sort=hits[-1]['sort']
 #sort0=sort[0]
 #sort1=sort[1]
 
-with open(f'{input_path}{file_prefix}{target_id}'+'.json', "w") as file:
-        json.dump(response_search, file)
-        file.write("\n")
+    with open(f'{input_path}{file_prefix}{target_id}'+'.json', "w") as file:
+            json.dump(response_search, file)
+            file.write("\n")
 
 
-target_id=target_id2
+    target_id=target_id2
 
-listFile = glob.glob(f'{input_path}{file_prefix}{target_id}*')
-print(listFile)
+    listFile = glob.glob(f'{input_path}{file_prefix}{target_id}*')
+    print(listFile)
 
-df = pd.DataFrame()
+    df = pd.DataFrame()
 
-for file in listFile:
-    z = open(file)
-    json_data = json.load(z)
+    for file in listFile:
+        z = open(file)
+        json_data = json.load(z)
 
-    df_tmp = pd.DataFrame.from_records(pd.DataFrame(json_data['hits']['hits'])['_source'].values)
-    df = pd.concat([df,df_tmp])
+        df_tmp = pd.DataFrame.from_records(pd.DataFrame(json_data['hits']['hits'])['_source'].values)
+        df = pd.concat([df,df_tmp])
 #print(df)
-df = df.reset_index(drop = True)
+    df = df.reset_index(drop = True)
 #print(df)
 
-def extract_elements(group):
-    def get_attr(el,key):
-        return None if el.find(key) is None else el.find(key).text
+    def extract_elements(group):
+        def get_attr(el,key):
+            return None if el.find(key) is None else el.find(key).text
     
-    delta_plus = pd.DataFrame()
-    filiale = group['filiale'].values[0]
-    codiceGestore = group['codiceGestore'].values[0]
-    outcome = group['outcome'].values[0]
-    codiceCliente = group['codiceCliente'].values[0]
-    delta_plus = pd.concat([delta_plus, pd.DataFrame([[
-                                  filiale,
-                                  codiceGestore,
-                                  outcome,
-                                  codiceCliente
-                                  ]],
-                                columns = [
-                                           'filiale',
-                                           'codiceGestore',
-                                           'outcome',
-                                           'codiceCliente'
-                                                      ])])
-    return delta_plus
+        delta_plus = pd.DataFrame()
+        filiale = group['filiale'].values[0]
+        codiceGestore = group['codiceGestore'].values[0]
+        outcome = group['outcome'].values[0]
+        codiceCliente = group['codiceCliente'].values[0]
+        delta_plus = pd.concat([delta_plus, pd.DataFrame([[
+                                      filiale,
+                                      codiceGestore,
+                                     outcome,
+                                     codiceCliente
+                                      ]],
+                                   columns = [
+                                               'filiale',
+                                               'codiceGestore',
+                                               'outcome',
+                                               'codiceCliente'
+                                                          ])])
+        return delta_plus
 
-output = df.groupby('codiceCliente').apply(extract_elements).reset_index(drop = True)
+    output = df.groupby('codiceCliente').apply(extract_elements).reset_index(drop = True)
 #output = df.apply(extract_elements).reset_index(drop = True)
-output.to_csv(f'{ouput_path}bsrobo4-risp-picking-{target_id}.csv',sep= ';', index = False)
+    output.to_csv(f'{ouput_path}bsrobo4-risp-picking-{target_id}.csv',sep= ';', index = False)
 
+
+    print("finito csv nella cartella output ")
 
 print("finito csv nella cartella output ")
-
+input("dai invio")
+exit()
 """ select 
 r4s.DESCRIPTION as R4_SESSION_DESCRIPTION,
 s.INDICE_OUTPUT as BS_SESSION_SCHED_INDICE_OUTPUT,
