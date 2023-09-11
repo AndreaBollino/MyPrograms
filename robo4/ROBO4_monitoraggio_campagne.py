@@ -28,7 +28,7 @@ file_prefix = 'bsrobo4-risp-picking-'
 #print(dict(env_var))
 
 
-#user = input("Inserire utente (SXXXXXX): ")
+#user = input("Inserire utente (S505815): ")
 user = os.environ.get("USERNAME")
 print ("Utente: "+user)
 passwd = getpass.getpass("Inserisci la tua password: ")
@@ -73,21 +73,54 @@ headers = {
 }
 
 #indice = input("Inserisci indice: ")
-robo_path = input("Inserisci path nel formato es C:\\Users\\S511480\\Desktop\\robo4\\monitoraggio : ")
-input_path = robo_path+'\\input'
-ouput_path = robo_path+'\\output'
+
+#robo_path = input("Inserisci path nel formato es C:\\Users\\S511480\\Desktop\\robo4\\monitoraggio : ")
+#robo_path = input("Inserisci path nel formato es C:\Users\S505815\Desktop\EstrazioniRobo4\monitoraggio : ")
+robo_path = r"C:\Users\S505815\Desktop\EstrazioniRobo4\monitoraggio"
+input_path = r"C:\Users\S505815\Desktop\EstrazioniRobo4\monitoraggio\input"
+ouput_path = r"C:\Users\S505815\Desktop\EstrazioniRobo4\monitoraggio\output"
+
+#input_path = robo_path+'\\input'
+#ouput_path = robo_path+'\\output'
+
 #input_path = os.path.dirname(os.path.abspath(__file__))+'\\input'
 #ouput_path = os.path.dirname(os.path.abspath(__file__))+'\\output'
 
-nome_file = input("Inserisci il nome del file da leggere: ")
-nome_file = robo_path+'\\'+nome_file
-lista_numeri = []
-with open(nome_file, 'r') as file:
+#nome_file = input("Inserisci il nome del file da leggere: ")
+#nome_file = robo_path+'\\'+nome_file
+#print(nome_file)
+#ciccio=input()
+def leggi_lista_numeri():
+    lista_numeri = []
+
+    while True:
+        try:
+            # Leggi l'input dell'utente come stringa
+            input_utente = input("Inserisci un numero intero (oppure 'fine' per terminare): ")
+
+            # Se l'utente inserisce 'fine', interrompi il loop
+            if input_utente.lower() == 'fine':
+                break
+
+            # Converte la stringa in un numero intero e aggiunge alla lista
+            numero = str(input_utente)
+            lista_numeri.append(numero)
+
+        except ValueError:
+            print("Errore: Devi inserire un numero intero valido o 'fine' per terminare.")
+
+    return lista_numeri
+	
+lista_numeri = leggi_lista_numeri()
+print("Lista di numeri inserita:", lista_numeri)
+#percorso_file = r"C:\Users\S505815\Desktop\EstrazioniRobo4\monitoraggio\indici.txt"
+#print(percorso_file)
+""" with open(percorso_file, "r") as file:
             for linea in file:
                 numero = linea.strip()  # Converte il testo della linea in un numero
                 numero = str(numero)
                 lista_numeri.append(numero)
-print(lista_numeri)
+print(lista_numeri) """
 
 for indiceM in lista_numeri:
     print(indiceM)

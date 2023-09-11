@@ -9,6 +9,7 @@ import glob
 import elementpath
 import os
 import getpass
+import pprint
 
 from xml.etree import ElementTree
 import numpy as np
@@ -107,6 +108,7 @@ def login():
     response = requests.post(url, headers=headers, data=json.dumps(data), verify=False)
     jwt=response.text.split(':')[1]
     print('JWT:' + jwt)
+    pprint.pprint('JWT:' + jwt)
     return jwt
 
 

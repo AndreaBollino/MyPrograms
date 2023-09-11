@@ -7,6 +7,12 @@ from openpyxl import Workbook
 #pw = os.environ.get('PASSWORD')
 
 nomeFile = input("inserisci il nome del file: ")
+nome_file = input("Inserisci il nome del file da leggere: ")
+lista_numeri = []
+with open(nome_file, 'r') as file:
+            for linea in file:
+                numero = float(linea.strip())  # Converte il testo della linea in un numero
+                lista_numeri.append(numero)
 
 cx_Oracle.init_oracle_client(config_dir="C:\\oracle\\ora12R2CL_32\\network\\admin")
 connection = cx_Oracle.connect(dsn="OraWV_NPWAADVISORYAPP_PROD.world", encoding="UTF-8")

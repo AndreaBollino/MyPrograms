@@ -26,15 +26,11 @@ WITH totale AS
   ON p.id              = bsw.ID_SESSION_PROGRESS
   WHERE 1              =1
   AND r4s.DESCRIPTION IS NOT NULL
-  AND  (LOWER (R4s.Description) = LOWER ('CA Sottopeso Obbligazionario lug-ago 2023') or
-        LOWER (R4s.Description) = LOWER ('CA Ottimizzazione % Equity lug-ago 2023') or
-        LOWER (R4s.Description) = LOWER ('CB Fondi ESG per PTF sostenibili lug-ago 23') or
-        LOWER (R4s.Description) = LOWER ('CA OICR LUG-AGO 23 - Personas LIQ') or
-        LOWER (R4s.Description) = LOWER ('CA OICR LUG-AGO 2023 - Personas BOND') or
-        LOWER (R4s.Description) = LOWER ('CA OICR LUG-AGO 2023 - Personas DYNA') or
-        LOWER (R4s.Description) = LOWER ('CA Fondi a Finestra LUG-AGO 2023 - Personas LIQ') or
-        LOWER (R4s.Description) = LOWER ('CA Fondi a Finestra LUG-AGO 2023 - Personas BOND') or
-        LOWER (R4s.Description) = LOWER ('CA Fondi a Finestra LUG-AGO 2023 - Personas DINAMICO')
+  AND  (LOWER (R4s.Description) = LOWER ('CA Sottopeso US Equity SETT 2023 bis') or
+        LOWER (R4s.Description) = LOWER ('CA Sottopeso US Equity SETT 2023') or
+        LOWER (R4s.Description) = LOWER ('CA Top di Gamma Aderenza < 7 SETT 2023') or
+        LOWER (R4s.Description) = LOWER ('CA Top di Gamma Adeguatezza Rischio MKT SETT 2023') or
+        LOWER (R4s.Description) = LOWER ('CB Top di Gamma Adeguatezza Rischio MKT SETT 2023')
 )
   --LIKE 'CA Top di Gamma Aderenza < 7 LUG-AGO 23'
   --AND R4s.Description LIKE :description

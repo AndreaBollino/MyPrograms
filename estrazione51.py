@@ -1,5 +1,4 @@
 import csv
-#import pdb
 def leggi_valori_da_file(file_path):
     with open(file_path, 'r') as file:
         valori = set(line.strip() for line in file)
@@ -26,7 +25,7 @@ def ordina_file_per_ottavo_elemento(file_path):
 
 def main():
     # Percorso del file contenente i valori da cercare
-    valori_file_path = 'indici49.txt'
+    valori_file_path = 'indici.txt'
     valori_da_trovare = leggi_valori_da_file(valori_file_path)
 
     # Percorsi dei file di input e output
@@ -34,9 +33,8 @@ def main():
     output_file_path = 'file_guida_sisco_new.csv'
 
     # Estrai le righe dal file di input e scrivile nel nuovo file
-    #pdb.set_trace()
     estrai_righe_da_file(input_file_path, output_file_path, valori_da_trovare)
-    #ordina_file_per_ottavo_elemento("file_guida_sisco_new.csv")
+    ordina_file_per_ottavo_elemento("file_guida_sisco_new.csv")
     with open('file_guida_sisco.csv', 'r') as file_guida_originale:
         prima_riga = next(file_guida_originale)
         with open('file_guida_sisco_new.csv', 'r+') as file_guida_nuovo:
