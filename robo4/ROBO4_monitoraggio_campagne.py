@@ -1,4 +1,5 @@
 #pyinstaller --onefile prova.py  //per generare .exe
+#auto-py-to-exe
 #query associazione nome strategia indice ROBO in fondo al codice
 import requests
 import json
