@@ -3,6 +3,8 @@
 #scrivi programma python per chiamata rest post  di esempio con body in formato json
 #scrivi programma python che ellimina " da una stringa 
 #in python come posso cercare il valore di un campo nella response di una chimata rest?
+#auto-py-to-exe
+#pyinstaller --onefile prova.py  //per generare .exe
 
 #conda install -c anaconda pandas
 import pandas as pd 
@@ -12,6 +14,7 @@ import numpy as np
 import time
 import os
 import getpass
+import openpyxl as pyxl
 
 
 def login():
@@ -114,6 +117,7 @@ print (countNDCad1SuIndice)
 filexls = input("Immetti nome folgio xls filtro : ")  
 
 #data = pd.read_excel('CA Fondi Finestra_bsrobo4-risp-picking-1669 - esclusioni.xlsx') 
+ciccio = pyxl.open(filexls)
 data = pd.read_excel(filexls) 
 lista = data.iloc[:,0].tolist() 
 lista[:] = np.unique(lista)
