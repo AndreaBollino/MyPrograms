@@ -1,4 +1,6 @@
 import csv
+import os
+
 def leggi_valori_da_file(file_path):
     with open(file_path, 'r') as file:
         valori = set(line.strip() for line in file)
@@ -9,6 +11,14 @@ def estrai_righe_da_file(input_file_path, output_file_path, valori_da_trovare):
     with open(input_file_path, 'r') as input_file, open(output_file_path, 'w') as output_file:
         for line in input_file:
             if any(valore in line for valore in valori_da_trovare):
+                output_file.write(line)
+
+def elimina_valori_da_file(input_file_path, file_guida_sisco_path, output_file_path):
+    with open(input_file_path, 'r') as input_file, open(file_guida_sisco_path, 'r') as file_guida_sisco, open(output_file_path, 'w') as output_file:
+        valori_da_trovare = set(input_file.read().splitlines())
+        
+        for line in file_guida_sisco:
+            if not any(valore in line for valore in valori_da_trovare):
                 output_file.write(line)
 
 def ordina_file_per_ottavo_elemento(file_path):
@@ -25,16 +35,20 @@ def ordina_file_per_ottavo_elemento(file_path):
 
 def main():
     # Percorso del file contenente i valori da cercare
-    valori_file_path = 'indici.txt'
+    valori_file_path = 'indici41.txt'
+    #input_file_path = 'indici41.txt'
     valori_da_trovare = leggi_valori_da_file(valori_file_path)
 
     # Percorsi dei file di input e output
     input_file_path = 'file_guida_sisco.csv'
     output_file_path = 'file_guida_sisco_new.csv'
+    file_guida_sisco_path = "file_guida_sisco.csv"
+    output_file_path_del = "file_guida_sisco_delete.csv"
 
     # Estrai le righe dal file di input e scrivile nel nuovo file
     estrai_righe_da_file(input_file_path, output_file_path, valori_da_trovare)
     ordina_file_per_ottavo_elemento("file_guida_sisco_new.csv")
+    elimina_valori_da_file(valori_file_path, file_guida_sisco_path, output_file_path_del)
     with open('file_guida_sisco.csv', 'r') as file_guida_originale:
         prima_riga = next(file_guida_originale)
         with open('file_guida_sisco_new.csv', 'r+') as file_guida_nuovo:
