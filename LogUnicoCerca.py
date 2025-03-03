@@ -12,3 +12,4 @@ if __name__ == "__main__":
     output_path = r'C:\APPO\LOG\output.txt'
     process_file(input_path, output_path)
     #prova
+    #prova3
